@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+
+<project name="Hipparcos old java code build file" default="all" basedir=".">
+  <property name="lib" value="${basedir}/lib"/>
+  <property name="conf" value="${basedir}/conf"/>
+  <property name="classes" value="${basedir}/classes"/>
+  <property name="dist" value="${basedir}/dist"/>
+  <property name="src" value="${basedir}/src"/>
+  <property name="docs" value="${basedir}/doc"/>
+  <property name="junit.reports" value="${basedir}/reports"/>
+  <path id="cp">
+    <pathelement location="${classes}"/>
+    <fileset dir="${lib}" includes="junit*.jar"/>
+  </path>
+  <target name="init" description="Initialize the build">
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${docs}"/>
+  </target>
+  <target name="clean" depends="" description="Clean the build">
+    <delete dir="${dist}"/>
+    <delete dir="${classes}"/>
+    <delete dir="${junit.reports}"/>
+    <delete dir="${docs}"/>
+    <delete dir="${junit.reports}"/>
+  </target>
+  <target name="compile" depends="init" description="Compile the Java code">
+    <echo>building </echo>
+    <javac destdir="${classes}" includeAntRuntime="false"
+      srcdir="${src}" excludes="**/test/**" debug="on" target="1.6">
+      <compilerarg value="-Xlint"/>
+      <classpath refid="cp" />
+    </javac>
+  </target>
+  <target name="testcompile" depends="init,compile" description="Compile the Java tests">
+    <echo>building </echo>
+    <javac destdir="${classes}" includeAntRuntime="false"
+      srcdir="${src}" includes="**/test/**" debug="on">
+      <compilerarg value="-Xlint"/>
+      <classpath refid="cp" />
+    </javac>
+  </target>
+	
+  <target name="test" depends="compile,testcompile" description="Test the Java code">
+    <delete dir="${junit.reports}"/>
+    <mkdir dir="${junit.reports}"/>
+    <junit errorProperty="junit.failed" failureProperty="junit.failed" fork="yes"
+      maxmemory="1g" printsummary="withOutAndErr" showoutput="yes">
+      <classpath refid="cp" />
+      <formatter type="xml" usefile="true" />
+      <batchtest todir="${junit.reports}">
+        <fileset dir="${classes}" includes="**/test/*Test.class" excludes="**/test/*PerfTest.class" />
+      </batchtest>
+    </junit>
+    <junitreport todir="${junit.reports}">
+      <fileset dir="${junit.reports}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${junit.reports}/html"/>
+    </junitreport>
+    <fail message="Test Cases Failed" if="junit.failed"/>
+  </target>
+	
+  <target name="dist" depends="clean,compile,test,jar" description="Build the JAR file">
+  </target>
+  <target name="dist-notest" depends="clean,compile,jar" description="Build the JAR file without testing">
+  </target>
+	
+<!--- 
+	MAKE THE JAR 
+-->
+  <target name="jar" depends="" description="Build the JAR ">
+    <jar destfile="${dist}/jhip.jar">
+    <manifest>
+      <attribute name="Main-Class" value="hipparcos.StartPanel" />
+      <attribute name="Revision"        value="$Revision:$" />
+    </manifest>
+
+      <fileset dir="${classes}" excludes="**/test/**" />
+      <fileset dir="${conf}" />
+    </jar>
+  </target>
+
+  <target name="docs" description="Create the Javadocs">
+    <javadoc destdir="${docs}" failonerror="true" use="true"
+      additionalparam='-breakiterator -quiet -tag copyright:a:"Copyright:" -link http://docs.oracle.com/javase/1.7.0/docs/api'
+      classpathref="cp">
+      <packageset dir="${src}" defaultexcludes="yes">
+        <exclude name="**/test/**" />
+      </packageset>
+<!--      <footer>"Built from revision ${svn.revision}"</footer> -->
+    </javadoc>
+  </target>
+  <target name="all" depends="dist,docs" description="Do everything"/>
+</project>
