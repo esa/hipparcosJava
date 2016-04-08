@@ -49,8 +49,8 @@ public class HIPproperties {
 				String curDir = dir.getAbsolutePath();
 				System.err.println(" Can not find "+toolProps +" use -DtoolProps=path to specify location if not in current dir ("+curDir+")");
 				props.put("hipurl","https://hipparcos-tools.cosmos.esa.int/cgi-bin/HIPcatalogueSearch.pl");
-				props.put("browser","firefox");
-				System.exit(1);
+//				props.put("browser","firefox");
+//				System.exit(1);
 			}
 		}
 	}

@@ -22,8 +22,9 @@
 package hipparcos.tools;
 
 import java.net.*;
-import java.io.*;
 import java.applet.*;
+import java.awt.Desktop;
+import java.io.IOException;
 
 /** Allow interaction with an already running browser - the default one
 	*/
@@ -45,6 +46,9 @@ public class Browser {
 		String cmd=null;
 		try {
 			String theBrowser= HIPproperties.getProperty("browser");
+			if (theBrowser==null) {
+				gotToDesktop(location);
+			}
 			cmd = theBrowser + " -raise -remote openURL(" + location+")";
 			if (Constants.verbose > 1) System.out.print ("Running "+cmd);
 			Runtime rt = Runtime.getRuntime();
@@ -57,13 +61,27 @@ public class Browser {
 			    p = rt.exec(cmd);
 			}
 		} catch (Exception e) {
-			String err = "Could not run browser "+cmd;
+			String err = "Could not run browser "+cmd +" check the browser property - leave it empty for default behaviour.";
 			System.err.println (err +":"+e);
 			return err;
 		}
 		return cmd;
 	}
 
+	/**
+	 * use standard awt desktop browser connection which was not around in 1997 ..
+	 *
+	 * @param location
+	 * @throws URISyntaxException 
+	 * @throws IOException 
+	 */
+	public static void gotToDesktop(String location) throws IOException, URISyntaxException {
+		if(Desktop.isDesktopSupported())
+		{
+		  Desktop.getDesktop().browse(new URI(location));
+		}
+		
+	}
 	public static String goTo (URL location) {
 		if (inApplet()) {
 			apCon.showDocument(location,"The Hipparcos Catalogue");
