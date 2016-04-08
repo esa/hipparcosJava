@@ -45,9 +45,11 @@ public class HIPproperties {
 				props.load(in);
 				in.close();
 			} catch (Exception e) {
-				System.err.println(" Can not find "+toolProps +" use -DtoolProps=path to specify location if not in current dir");
-				props.put("hipurl","http://astro.estec.esa.nl/hipparcos_scripts/HIPcatalogueSearch.pl");
-				props.put("browser","netscape");
+				File dir = new File(".");
+				String curDir = dir.getAbsolutePath();
+				System.err.println(" Can not find "+toolProps +" use -DtoolProps=path to specify location if not in current dir ("+curDir+")");
+				props.put("hipurl","https://hipparcos-tools.cosmos.esa.int/cgi-bin/HIPcatalogueSearch.pl");
+				props.put("browser","firefox");
 				System.exit(1);
 			}
 		}
@@ -100,7 +102,7 @@ public class HIPproperties {
 
      
 
-        final String[] propDirs ={".","./conf", "conf"};
+        final String[] propDirs ={".", "conf"};
 
         String EXTENSION = ".properties";
         List<File> fileNameList = new ArrayList<File>(propDirs.length);
