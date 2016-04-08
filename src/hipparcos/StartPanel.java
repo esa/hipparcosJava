@@ -35,6 +35,7 @@ import java.util.Properties;
 import hipparcos.curve.LightCurve;
 import hipparcos.hipi.PlotHipi;
 import hipparcos.sky.ShowSky;
+import hipparcos.tools.Browser;
 import hipparcos.tools.MainFrame;
 
 public class StartPanel extends Frame implements ActionListener {
@@ -118,7 +119,8 @@ public class StartPanel extends Frame implements ActionListener {
 		if (args!=null && args.length>0) {
 			StartPanel.args=args;
 		}
-		StartPanel sp = new StartPanel() ;
+		Browser.setMainFrame();
+		new StartPanel() ;
 	}
 
 
