@@ -7,3 +7,4 @@ See the user documentaion here: http://www.cosmos.esa.int/web/hipparcos/java-too
 
 For more details on the Hipparcos Mission  see: http://sci.esa.int/hipparcos/
 
+![Screen shot of Hipparcos apps](screen.png)
